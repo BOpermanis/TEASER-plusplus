@@ -114,6 +114,7 @@ if (BUILD_MATLAB_BINDINGS)
 endif ()
 
 if (BUILD_PYTHON_BINDINGS)
+    find_package (Python COMPONENTS Interpreter Development PATH /usr/bin/python3)
     set(PYBIND11_PYTHON_VERSION ${TEASERPP_PYTHON_VERSION})
 
     # download the pybind11 repo
