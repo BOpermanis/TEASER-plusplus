@@ -14,13 +14,13 @@ endif ()
 
 # Options
 option(BUILD_TESTS "Build tests" ON)
-option(BUILD_TEASER_FPFH "Build TEASER++ wrappers for PCL FPFH estimation." OFF)
+option(BUILD_TEASER_FPFH "Build TEASER++ wrappers for PCL FPFH estimation." ON)
 option(BUILD_MATLAB_BINDINGS "Build MATLAB bindings" OFF)
 option(BUILD_PYTHON_BINDINGS "Build Python bindings" ON)
-option(BUILD_DOC "Build documentation" ON)
+option(BUILD_DOC "Build documentation" OFF)
 option(BUILD_WITH_MARCH_NATIVE "Build with flag march=native" OFF)
 option(ENABLE_MKL "Try to use Eigen with MKL" OFF)
-option(ENABLE_DIAGNOSTIC_PRINT "Enable printing of diagnostic messages" ON)
+option(ENABLE_DIAGNOSTIC_PRINT "Enable printing of diagnostic messages" OFF)
 
 if (ENABLE_DIAGNOSTIC_PRINT)
     message(STATUS "Enable printing of diagnostic messages.")
@@ -34,6 +34,8 @@ endif ()
 
 # Find dependencies
 # Eigen3
+
+
 find_package(Eigen3 3.2 QUIET REQUIRED NO_MODULE PATH /eigen-3.2.10/build)
 if (ENABLE_MKL)
     find_package(MKL)
