@@ -36,7 +36,8 @@ endif ()
 # Eigen3
 
 
-find_package(Eigen3 3.2 QUIET REQUIRED NO_MODULE PATH /eigen-3.2.10/build)
+#find_package(Eigen3 3.2 QUIET REQUIRED NO_MODULE PATHS /eigen-3.2.10/build)
+find_package(Eigen3 3.2 QUIET REQUIRED NO_MODULE)
 if (ENABLE_MKL)
     find_package(MKL)
     if (MKL_FOUND)
