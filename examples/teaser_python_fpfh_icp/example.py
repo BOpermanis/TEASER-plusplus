@@ -2,8 +2,8 @@ import open3d as o3d
 import teaserpp_python
 import numpy as np 
 import copy
-from helpers import *
-
+from examples.teaser_python_fpfh_icp.helpers import *
+import matplotlib.pyplot as plt
 VOXEL_SIZE = 0.05
 VISUALIZE = True
 
@@ -25,8 +25,10 @@ A_xyz = pcd2xyz(A_pcd) # np array of size 3 by N
 B_xyz = pcd2xyz(B_pcd) # np array of size 3 by M
 
 # extract FPFH features
-A_feats = extract_fpfh(A_pcd,VOXEL_SIZE)
-B_feats = extract_fpfh(B_pcd,VOXEL_SIZE)
+A_feats = extract_fpfh(A_pcd, VOXEL_SIZE)
+B_feats = extract_fpfh(B_pcd, VOXEL_SIZE)
+
+print(A_feats.shape, B_feats.shape)
 
 # establish correspondences by nearest neighbour search in feature space
 corrs_A, corrs_B = find_correspondences(
@@ -48,11 +50,13 @@ line_set = o3d.geometry.LineSet(
     lines=o3d.utility.Vector2iVector(lines),
 )
 line_set.colors = o3d.utility.Vector3dVector(colors)
-o3d.visualization.draw_geometries([A_pcd,B_pcd,line_set])
+# o3d.visualization.draw_geometries([A_pcd,B_pcd,line_set])
 
 # robust global registration using TEASER++
 NOISE_BOUND = VOXEL_SIZE
 teaser_solver = get_teaser_solver(NOISE_BOUND)
+print(A_corr.shape, type(A_corr))
+exit()
 teaser_solver.solve(A_corr,B_corr)
 solution = teaser_solver.getSolution()
 R_teaser = solution.rotation
@@ -61,18 +65,18 @@ T_teaser = Rt2T(R_teaser,t_teaser)
 
 # Visualize the registration results
 A_pcd_T_teaser = copy.deepcopy(A_pcd).transform(T_teaser)
-o3d.visualization.draw_geometries([A_pcd_T_teaser,B_pcd])
+# o3d.visualization.draw_geometries([A_pcd_T_teaser,B_pcd])
 
 # local refinement using ICP
-icp_sol = o3d.registration.registration_icp(
+icp_sol = o3d.pipelines.registration.registration_icp(
       A_pcd, B_pcd, NOISE_BOUND, T_teaser,
-      o3d.registration.TransformationEstimationPointToPoint(),
-      o3d.registration.ICPConvergenceCriteria(max_iteration=100))
+      o3d.pipelines.registration.TransformationEstimationPointToPoint(),
+      o3d.pipelines.registration.ICPConvergenceCriteria(max_iteration=100))
 T_icp = icp_sol.transformation
 
 # visualize the registration after ICP refinement
 A_pcd_T_icp = copy.deepcopy(A_pcd).transform(T_icp)
-o3d.visualization.draw_geometries([A_pcd_T_icp,B_pcd])
+# o3d.visualization.draw_geometries([A_pcd_T_icp,B_pcd])
 
 
 
