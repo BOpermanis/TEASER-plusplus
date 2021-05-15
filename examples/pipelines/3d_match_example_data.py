@@ -3,6 +3,12 @@ from pprint import pprint
 import cv2
 import numpy as np
 from PIL import Image
+from time import sleep
+import matplotlib.pyplot as plt
+
+# import pclpy
+# from pclpy import pcl
+
 
 def cloud_from_depth(depth, K, depth_scale = 1000):
     # z = d / depth_scale
@@ -44,5 +50,13 @@ for frgb, fdepth, fpose in zip(fsrgb, fsdepth, fspose):
     depth = cv2.cvtColor(cv2.imread(fdepth), cv2.COLOR_RGB2GRAY)
     cloud = cloud_from_depth(depth, intrinsic_matrix)
     print(cloud.shape)
-    # Image.fromarray(rgb).show()
+
+    fig = plt.figure()
+    ax = fig.add_subplot(projection='3d')
+
+    ax.scatter(cloud[:100, 0], cloud[:100, 1], cloud[:100, 2])
+
+    plt.show()
+
+    # Image.fromarray(rgb).show(); sleep(10)
     exit()
